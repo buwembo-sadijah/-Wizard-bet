@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Wizard Bet — Demo Casino</title>
+<style>
+:root{
+  --bg:#111517;--panel:#191e21;--panel2:#23292c;--muted:#9da4a8;
+  --text:#f7f8f8;--lime:#9cff00;--lime2:#72d500;--purple:#5b00d8;
+  --red:#ff2451;--gold:#ffc400;
+}
+*{box-sizing:border-box} html,body{margin:0;background:#080a0b;color:var(--text);font-family:Arial,Helvetica,sans-serif}
+body{display:flex;justify-content:center}.app{width:100%;max-width:520px;min-height:100vh;background:var(--bg);padding-bottom:82px}
+.top{height:72px;background:#151a1d;display:flex;align-items:center;padding:0 16px;gap:14px;position:sticky;top:0;z-index:20;border-bottom:1px solid #252b2e}
+.logo{font-weight:900;font-size:28px;letter-spacing:-2px}.logo b{color:var(--lime)}
+.search{margin-left:auto;font-size:28px}.balance{background:#252b2e;border-radius:28px;padding:9px 12px;display:flex;align-items:center;gap:9px;font-weight:800}.plus{background:var(--lime);color:#111;border:0;width:39px;height:39px;border-radius:50%;font-size:27px;font-weight:900}
+.nav{height:72px;background:#171c1f;display:grid;grid-template-columns:repeat(5,1fr);align-items:center;border-bottom:3px solid #4d00b8}.nav button,.bottom button{background:none;border:0;color:#aab0b3;font-weight:800;font-size:12px}.nav .active{color:var(--lime)}.ico{font-size:25px;display:block;margin-bottom:3px}
+.hero{height:58px;background:linear-gradient(90deg,#25005c,#6b00e8,#25005c);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px}
+.filters{display:flex;gap:10px;overflow:auto;padding:14px 16px 10px}.pill{white-space:nowrap;background:#23292c;border:1px solid #30373a;border-radius:25px;padding:11px 16px;font-weight:800}.pill.active{background:#406600;border-color:#91dd00}
+.section{padding:10px 16px}.title{font-size:21px;font-weight:900;margin:12px 0}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.game{background:#202527;border-radius:15px;overflow:hidden;position:relative;border:1px solid #292f32;cursor:pointer}.game img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block}.badge{position:absolute;left:0;top:8px;background:#8b22f0;padding:6px 10px;border-radius:0 12px 12px 0;font-size:11px;font-weight:900}.star{position:absolute;right:8px;top:7px;font-size:22px}.gname{padding:8px;font-weight:800;font-size:12px;min-height:34px}
+.favrow{display:flex;gap:16px;overflow:auto}.fav{min-width:145px;width:145px}.fav .game{border:2px solid #ff1550}.fav img{aspect-ratio:1/1}
+.banner{margin:12px 16px;padding:15px;border-radius:14px;background:linear-gradient(135deg,#252c2f,#15191b);border:1px solid #394043}.banner b{color:var(--lime)}
+.view{display:none}.view.active{display:block}
+.panel{margin:16px;background:#1a2022;border:1px solid #2c3336;border-radius:18px;padding:16px}.bigbtn{width:100%;border:0;border-radius:14px;background:var(--lime);color:#111;padding:14px;font-weight:900;font-size:16px}.input{width:100%;background:#0f1314;border:1px solid #343b3e;color:white;padding:13px;border-radius:12px;margin:7px 0}
+.crash{height:290px;border-radius:18px;background:radial-gradient(circle at 50% 70%,#2b006b,#101214 60%);display:flex;flex-direction:column;align-items:center;justify-content:center;border:1px solid #48208a}.mult{font-size:58px;font-weight:900;color:var(--lime)}.rocket{font-size:55px}.row{display:flex;gap:10px}.row>*{flex:1}
+.sport{background:#1a2022;border-radius:14px;margin:10px 16px;overflow:hidden;border:1px solid #2b3235}.sporthead{padding:12px;background:#22292c;font-weight:900}.market{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:10px}.odd{background:#101516;border:1px solid #30383b;border-radius:9px;padding:10px;text-align:center;font-weight:800}.odd small{display:block;color:#9ca3a7;margin-bottom:4px}.selected{border-color:var(--lime);box-shadow:0 0 0 1px var(--lime) inset}
+.bottom{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:520px;height:76px;background:#1b2022;border-top:1px solid #303638;display:grid;grid-template-columns:repeat(5,1fr);z-index:30}.bottom button{font-size:11px}.bottom .active{color:var(--lime)}
+.toast{position:fixed;left:50%;bottom:92px;transform:translateX(-50%);background:#eaffbf;color:#111;padding:11px 16px;border-radius:25px;font-weight:900;display:none;z-index:50}
+.modal{position:fixed;inset:0;background:#000b;display:none;align-items:flex-end;z-index:40}.modalbox{width:100%;max-width:520px;margin:auto 0 0;background:#191e21;border-radius:22px 22px 0 0;padding:20px;border-top:2px solid var(--lime)}
+.close{float:right;background:#303639;border:0;color:white;border-radius:50%;width:34px;height:34px}
+@media(min-width:521px){.app{box-shadow:0 0 60px #000}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="top"><div class="logo">wizard<b>Bet</b></div><div class="search">⌕</div><div class="balance">◉ <span id="bal">25.08</span><button class="plus" onclick="deposit()">+</button></div></header>
+<nav class="nav">
+<button class="active" onclick="show('home',this)"><span class="ico">⌂</span>HOME</button>
+<button onclick="show('sports',this)"><span class="ico">⚽</span>SPORTS</button>
+<button onclick="show('crash',this)"><span class="ico">〽</span>LIVE</button>
+<button onclick="show('casino',this)"><span class="ico">♣</span>CASINO</button>
+<button onclick="show('virtuals',this)"><span class="ico">🎮</span>VIRTUALS</button>
+</nav>
+
+<main>
+<section id="home" class="view active">
+<div class="hero">🎁 WELCOME TO WIZARD BET DEMO</div>
+<div class="filters"><span class="pill active">⌂ Home</span><span class="pill">All</span><span class="pill">💥 Popular</span><span class="pill">🔥 Hot</span><span class="pill">🆕 New</span></div>
+<div class="section"><div class="title">☆ Favourites</div><div class="favrow" id="favs"></div></div>
+<div class="section"><div class="title">🇺🇬 Most Popular in Uganda</div><div class="cards" id="games"></div></div>
+<div class="banner">🎯 <b>Demo credits only.</b> No real-money deposits or withdrawals are enabled.</div>
+</section>
+
+<section id="casino" class="view"><div class="hero">♣ CASINO</div><div class="filters"><span class="pill active">All</span><span class="pill">Popular</span><span class="pill">Slots</span><span class="pill">Crash</span></div><div class="section"><div class="title">Casino Games</div><div class="cards" id="casinoGames"></div></div></section>
+
+<section id="sports" class="view"><div class="hero">⚽ SPORTS BETTING</div><div class="sport"><div class="sporthead">⚽ Football • Demo League</div><div style="padding:12px">Wizard FC <b style="float:right">14:30</b><br>BetPawa United</div><div class="market"><button class="odd" onclick="odd(this,'Wizard FC Win',1.80)"><small>1</small>1.80</button><button class="odd" onclick="odd(this,'Draw',3.25)"><small>X</small>3.25</button><button class="odd" onclick="odd(this,'BetPawa United Win',4.10)"><small>2</small>4.10</button></div></div>
+<div class="sport"><div class="sporthead">🏀 Basketball • Demo League</div><div style="padding:12px">Kampala Stars <b style="float:right">18:00</b><br>Jinja Giants</div><div class="market"><button class="odd" onclick="odd(this,'Kampala Stars',1.55)"><small>HOME</small>1.55</button><button class="odd" onclick="odd(this,'Jinja Giants',2.45)"><small>AWAY</small>2.45</button><button class="odd" onclick="odd(this,'Total Over',1.90)"><small>O 160.5</small>1.90</button></div></div></section>
+
+<section id="crash" class="view"><div class="hero">〽 CRASH</div><div class="panel"><div class="crash"><div class="rocket">🚀</div><div class="mult" id="mult">1.00x</div><div id="status">Ready</div></div><div class="row" style="margin-top:12px"><input class="input" id="stake" type="number" value="1" min=".1" step=".1"><button class="bigbtn" id="crashBtn" onclick="startCrash()">START</button></div><p style="color:#9da4a8">Cash out before the multiplier crashes. Demo credits only.</p></div></section>
+
+<section id="virtuals" class="view"><div class="hero">🎮 VIRTUAL SPORTS</div><div class="panel"><h2>Virtual Football</h2><p>Wizard FC vs Kampala City</p><div class="market"><button class="odd" onclick="odd(this,'Wizard FC Virtual',2.00)">2.00</button><button class="odd" onclick="odd(this,'Draw Virtual',3.10)">3.10</button><button class="odd" onclick="odd(this,'Kampala City Virtual',2.70)">2.70</button></div></div></section>
+
+<section id="bets" class="view"><div class="hero">🧾 BETSLIP</div><div class="panel" id="slip"><p style="color:#9da4a8">Your betslip is empty.</p></div></section>
+<section id="account" class="view"><div class="hero">👤 ACCOUNT</div><div class="panel"><h2>Wizard Bet Demo</h2><p>Virtual balance: <b>UGX <span id="bal2">25.08</span></b></p><button class="bigbtn" onclick="deposit()">+ Add 100 demo credits</button><h3>Demo settings</h3><p>✓ Virtual credits only<br>✓ Local demo history<br>✓ No real-money transactions</p></div></section>
+</main>
+
+<nav class="bottom">
+<button class="active" onclick="show('home',this)">⌂<br>Home</button>
+<button onclick="show('sports',this)">⚽<br>Sports</button>
+<button onclick="show('bets',this)">🧾<br>Betslip <b id="count"></b></button>
+<button onclick="show('crash',this)">〽<br>My bets</button>
+<button onclick="show('account',this)">♙<br>Account</button>
+</nav>
+<div class="toast" id="toast"></div>
+<div class="modal" id="modal"><div class="modalbox"><button class="close" onclick="modal(false)">×</button><h2>Add demo credits</h2><p>Choose an amount for the playable demo.</p><div class="row"><button class="bigbtn" onclick="add(50)">+50</button><button class="bigbtn" onclick="add(100)">+100</button><button class="bigbtn" onclick="add(500)">+500</button></div></div></div>
+
+<script>
+let balance=25.08, slip=[], crashTimer=null, crashPoint=0, current=1;
+const games=[
+ ['Aviator','✈️','Popular'],['Road X','🚗','Hot'],['Wheel of Luck 2','🎡','Exclusive'],['JetX','🚀','New'],
+ ['Casino Island','🎰','Popular'],['777 Fruit Island','7️⃣',''],['Multi Hot 5','🍉','3x3 Slot'],['Monster Mega Hit','💰','Hot'],
+ ['Diamond Mine','💎','Exclusive'],['Lucky Wizard','🧙','Exclusive'],['Fancy 7s','7️⃣',''],['Golden Spin','🪙','Hot']
+];
+function card(g,i){return `<div class="game" onclick="play('${g[0]}')"><span class="badge">${g[2]||'PLAY'}</span><span class="star" onclick="event.stopPropagation();fav(${i})">☆</span><div style="aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;font-size:65px;background:linear-gradient(135deg,#29102c,#171a1c)">${g[1]}</div><div class="gname">${g[0]}</div></div>`}
+function render(){document.getElementById('games').innerHTML=games.map(card).join('');document.getElementById('casinoGames').innerHTML=games.map(card).join('');document.getElementById('favs').innerHTML=games.slice(0,2).map((g,i)=>`<div class="fav">${card(g,i)}</div>`).join('')}
+function show(id,btn){document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.nav button,.bottom button').forEach(x=>x.classList.remove('active'));if(btn)btn.classList.add('active');if(id==='bets')renderSlip();scrollTo(0,0)}
+function update(){document.getElementById('bal').textContent=balance.toFixed(2);document.getElementById('bal2').textContent=balance.toFixed(2)}
+function toast(t){let x=document.getElementById('toast');x.textContent=t;x.style.display='block';setTimeout(()=>x.style.display='none',1800)}
+function deposit(){modal(true)} function modal(v){document.getElementById('modal').style.display=v?'flex':'none'}
+function add(n){balance+=n;update();modal(false);toast('Added '+n+' demo credits')}
+function play(name){toast('Opening '+name+' — demo mode');if(name==='Aviator'||name==='JetX')show('crash')}
+function fav(){toast('Added to favourites')}
+function odd(el,name,price){document.querySelectorAll('.odd').forEach(x=>x.classList.remove('selected'));el.classList.add('selected');slip=[{name,price,stake:1}];document.getElementById('count').textContent='1';toast(name+' added to betslip');}
+function renderSlip(){let s=document.getElementById('slip');if(!slip.length){s.innerHTML='<p style="color:#9da4a8">Your betslip is empty.</p>';return}let b=slip[0];s.innerHTML=`<h3>${b.name}</h3><p>Odds: <b>${b.price.toFixed(2)}</b></p><input class="input" id="betStake" type="number" value="1" min=".1" step=".1"><p>Potential return: <b id="ret">${b.price.toFixed(2)}</b> credits</p><button class="bigbtn" onclick="placeBet()">PLACE DEMO BET</button>`;document.getElementById('betStake').oninput=e=>document.getElementById('ret').textContent=(+e.target.value*b.price).toFixed(2)}
+function placeBet(){let n=+document.getElementById('betStake').value||0;if(n<=0||n>balance){toast('Insufficient demo credits');return}balance-=n;update();slip=[];document.getElementById('count').textContent='';toast('Demo bet placed');renderSlip()}
+function startCrash(){if(crashTimer)return;let n=+document.getElementById('stake').value||0;if(n<=0||n>balance){toast('Insufficient demo credits');return}balance-=n;update();crashPoint=+(1.05+Math.random()*5).toFixed(2);current=1;document.getElementById('status').textContent='Flying…';document.getElementById('crashBtn').textContent='CASH OUT';document.getElementById('crashBtn').onclick=cashOut;crashTimer=setInterval(()=>{current+=0.035+current*0.008;document.getElementById('mult').textContent=current.toFixed(2)+'x';if(current>=crashPoint){clearInterval(crashTimer);crashTimer=null;document.getElementById('status').textContent='CRASHED at '+crashPoint+'x';document.getElementById('crashBtn').textContent='START';document.getElementById('crashBtn').onclick=startCrash;toast('Round crashed');}},50)}
+function cashOut(){if(!crashTimer)return;clearInterval(crashTimer);crashTimer=null;let n=+document.getElementById('stake').value||0;let win=n*current;balance+=win;update();document.getElementById('status').textContent='Cashed out at '+current.toFixed(2)+'x';document.getElementById('crashBtn').textContent='START';document.getElementById('crashBtn').onclick=startCrash;toast('Won '+win.toFixed(2)+' demo credits')}
+render();update();
+</script>
+</div>
+</body>
+</html>
